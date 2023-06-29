@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "app-db"
+version = "0.1.0"
+description = ""
+authors = ["John Halazonetis <john.halazonetis@icloud.com>"]
+readme = "README.md"
+packages = [{include = "app_db"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+sqlalchemy = "^2.0.17"
+shortuuid = "^1.0.11"
+pymysql = "^1.1.0"
+
+
+[tool.poetry.group.dev.dependencies]
+autopep8 = "^2.0.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
