@@ -9,4 +9,4 @@ class MirrorType(Enum):
     M6 = 6
     M7 = 7
     M8 = 8
-    RSFM = 9
+    RSMF = 9
