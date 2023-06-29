@@ -11,12 +11,9 @@ class Hardware(HardwareBase):
     id = Column(UUID, primary_key=True, default=uuid4())
     order_number = Column(Integer, default=None)
     serial_number = Column(String(40), nullable=False)
-    material_number = Column(String(40), default=None)
-    parent_id = Column(UUID)
     stock_status = Column(String(50), nullable=False)
     build_status = Column(String(50), nullable=False)
-    position = Column(String(50))
-    version = Column(String(20), nullable=False)
+    hardware_model_id = Column(UUID, nullable=False)
 
 class StockStatus(Enum):
     out_of_stock = 1
