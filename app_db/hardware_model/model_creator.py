@@ -19,11 +19,15 @@ class ModelCreator:
         vcm1 = self.create_vcm(size=vcm_size, parent_id=au.id, position='1')
         vcm2 = self.create_vcm(size=vcm_size, parent_id=au.id, position='2')
 
-        hw_models = [au, support_block] + vcm1 + vcm2
+        hw_models = []
+        hw_models.append(au)
+        hw_models.append(support_block)
+        hw_models.extend(vcm1)
+        hw_models.extend(vcm2)
 
         if not without_mgc:
             mgc = self.create_mgc(size=mgc_size, parent_id=au.id)
-            hw_models += mgc
+            hw_models.extend(mgc)
 
         return hw_models
 
@@ -33,8 +37,12 @@ class ModelCreator:
         magnet = self.create_model(name='Magnet', parent_id=mgc.id)
         tmds = self.create_model(name='TMD', parent_id=mgc.id, quantity=2)
 
-        hw_models = [mgc, housing, magnet]
-        hw_models = hw_models.extend(tmds)
+        hw_models = []
+        hw_models.append(mgc)
+        hw_models.append(housing)
+        hw_models.append(magnet)
+        hw_models.extend(tmds)
+
         return hw_models
 
     def create_vcm(self, size: VCMSize, parent_id: UUID, position: str) -> List[HardwareModel]:
@@ -45,8 +53,13 @@ class ModelCreator:
         pcb = self.create_model(name='PCB', parent_id=vcm.id)
         tmds = self.create_model(name='TMD', parent_id=vcm.id, quantity=2)
 
-        hw_models = [vcm, housing, magnet, coil, pcb]
-        hw_models = hw_models.extend(tmds)
+        hw_models = []
+        hw_models.append(vcm)
+        hw_models.append(housing)
+        hw_models.append(magnet)
+        hw_models.append(coil)
+        hw_models.append(pcb)
+        hw_models.extend(tmds)
         return hw_models
 
     def create_model(self, name: str, parent_id: UUID, position: str = None, quantity: int = 1) \
@@ -70,6 +83,8 @@ class ModelCreator:
 
             if position is not None:
                 position = f'{position} - '
+            else:
+                position = ''
 
             for i in range(1, quantity+1):
                 model = HardwareModel(
