@@ -125,6 +125,20 @@ def create_model(mirror: MirrorType, position: int, version: int) -> List[Hardwa
         case _:
             return creator.create_au(str(position), MGCSize.Medium, VCMSize.Normal)
 
+def create_all_au_models(version: int) -> List[HardwareModel]:
+    '''
+    Iterate through all mirrors and all positions and create AU models
+
+    Parameters
+    ----------
+    - `version` (`int`): Version to create
+
+    Returns
+    -------
+    - `List[HardwareModel]`: List of all hardware models linked together
+    '''
+
+
 def main(mirror: MirrorType, position: int, version: int):
     # Create model from parameters
     au_model = create_model(mirror, position, version)
