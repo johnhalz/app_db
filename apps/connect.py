@@ -50,7 +50,7 @@ def evaluate_args():
 
 def main(ip_address: str, port_number: int, username: str, password: str):
     production_db = AUProductionDB(ip_address, port_number, username, password)
-    production_db.connect(database_name='production')
+    production_db.connect(database_name='users')
 
     sleep(3)
 

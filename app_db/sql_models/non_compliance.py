@@ -19,7 +19,6 @@ class NonCompliance(NonComplianceBase):
     result_id = Column(UUID(as_uuid=True), nullable=False)
     status = Column(String(50), nullable=False)
     decision = Column(String(400))
-    comments = Column(String(400))
     reporter_id = Column(UUID(as_uuid=True), nullable=False)
     signer_id = Column(UUID(as_uuid=True))
 

@@ -20,16 +20,6 @@ def parse_arguments():
         prog='Create Hardware Models',
         description='Create hardware models in database'
     )
-    parser.add_argument('-m', '--mirror',
-                        dest='mirror_number',
-                        type=int,
-                        required=True,
-                        help='Mirror number')
-    parser.add_argument('-p', '--position',
-                        dest='position',
-                        type=int,
-                        required=True,
-                        help='Hardware position (relative to assigned mirror)')
     parser.add_argument('-v', '--version',
                         dest='version',
                         type=int,
@@ -42,9 +32,7 @@ def evaluate_args():
     '''Evaluate input arguments'''
     args = parse_arguments()
 
-    mirror = MirrorType(args.mirror_number)
-
-    return mirror, args.position, args.version
+    return args.version
 
 def valid_positions(mirror: MirrorType) -> List[int]:
     '''
@@ -137,11 +125,19 @@ def create_all_au_models(version: int) -> List[HardwareModel]:
     -------
     - `List[HardwareModel]`: List of all hardware models linked together
     '''
+    hardware_models = []
+    for mirror in MirrorType:
+        positions = valid_positions(mirror)
+        for position in positions:
+            hardware_models.extend(
+                create_model(mirror, position, version)
+            )
 
+    return hardware_models
 
-def main(mirror: MirrorType, position: int, version: int):
-    # Create model from parameters
-    au_model = create_model(mirror, position, version)
+def main(version: int):
+    # Create models from parameters
+    au_models = create_all_au_models(version)
 
     # Connect to database
     au5k_db = AUProductionDB(ip_address='127.0.0.1', port_number=3306, username='root', password='Password123!')
@@ -150,7 +146,7 @@ def main(mirror: MirrorType, position: int, version: int):
     # Create hardware_models table (if it doesn't already exist)
     HardwareModelBase.metadata.create_all(au5k_db.engine)
 
-    for hardware_model in iter(au_model):
+    for hardware_model in au_models:
         au5k_db.session.add(hardware_model)
         au5k_db.session.commit()
 
@@ -158,4 +154,4 @@ def main(mirror: MirrorType, position: int, version: int):
 
 if __name__ == '__main__':
     setup_logger()
-    main(*evaluate_args())
+    main(evaluate_args())

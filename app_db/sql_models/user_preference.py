@@ -1,4 +1,6 @@
 from uuid import uuid4
+from enum import Enum
+
 from sqlalchemy import Column, String, UUID, Boolean, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -19,3 +21,12 @@ class UserPreference(UserPreferenceBase):
         self.language = language
         self.scanner_haptics = scanner_haptics
         self.scanner_timeout = scanner_timeout
+
+class app_light_mode(Enum):
+    system = 'System'
+    light = 'Light'
+    dark = 'Dark'
+
+class language(Enum):
+    english = 'English'
+    deutsch = 'Deutsch'

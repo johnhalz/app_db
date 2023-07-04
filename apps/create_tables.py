@@ -13,7 +13,8 @@ from app_db.sql_models import (
     MeasurementBase,
     ResultBase,
     EquipmentBase,
-    HardwareModelBase
+    HardwareModelBase,
+    CommentBase
 )
 
 def setup_logger():
@@ -64,8 +65,13 @@ def main(ip_address: str, port_number: int, username: str, password: str):
     production_db.connect(database_name='production')
 
     bases = [ResultBase, HardwareBase, NonComplianceBase, ProductionStepBase, ResultBase, HardwareModelBase,
-             SpecificationBase, UserPreferenceBase, UserBase, MeasurementBase, EquipmentBase]
+             SpecificationBase, MeasurementBase, EquipmentBase, CommentBase]
     for base in bases:
+        base.metadata.create_all(production_db.engine)
+
+    production_db.connect(database_name='users')
+    user_bases = [UserPreferenceBase, UserBase]
+    for base in user_bases:
         base.metadata.create_all(production_db.engine)
 
     logging.info('All tables created!')
