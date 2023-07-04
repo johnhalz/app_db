@@ -10,7 +10,7 @@ from passlib import pwd
 from cryptography.fernet import Fernet
 from base64 import urlsafe_b64encode
 
-from app_db.sql_models import User, UserBase, UserRole
+from app_db.sql_models import User, UserBase, UserRole, UserPreference
 from app_db.interface import AUProductionDB
 
 def setup_logger():
@@ -46,12 +46,18 @@ def evaluate_args():
     return args.number_of_users
 
 def encrypt_string(key: str, input_str: str) -> str:
-
     uuid_key = key.replace('-', '')
     cipher_suite = Fernet(urlsafe_b64encode(uuid_key.encode()))
     return cipher_suite.encrypt(input_str.encode()).decode()
 
 def main(number_of_users: int):
+    # Connect to database
+    au5k_db = AUProductionDB(ip_address='127.0.0.1', port_number=3306, username='root', password='Password123!')
+    au5k_db.connect(database_name='users')
+
+    # Read existing user preferences
+    user_preferences = au5k_db.read_table_to_model(UserPreference)
+
     # Create new users
     new_users = []
     password_characters = string.ascii_letters + string.digits + string.punctuation
@@ -66,13 +72,9 @@ def main(number_of_users: int):
                 last_name=get_last_name(),
                 encrpyted_password=encrypt_string(key=str(user_id), input_str=unenc_password),
                 role=random.choice(list(UserRole)).value,
-                user_preference_id=uuid4()
+                user_preference_id=random.choice(user_preferences).id
             )
         )
-
-    # Connect to database
-    au5k_db = AUProductionDB(ip_address='127.0.0.1', port_number=3306, username='root', password='Password123!')
-    au5k_db.connect(database_name='users')
 
     # Create users table (if it doesn't already exist)
     UserBase.metadata.create_all(au5k_db.engine)
