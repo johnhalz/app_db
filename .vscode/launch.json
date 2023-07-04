@@ -28,6 +28,15 @@
             "args": ["-m", "4", "-p", "1"],
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Create Fake Users",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/apps/create_users.py",
+            "args": ["-n", "20"],
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
