@@ -37,6 +37,14 @@
             "args": ["-n", "20"],
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Create User Preferences",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/apps/create_user_preferences.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

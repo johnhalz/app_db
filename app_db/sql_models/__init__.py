@@ -2,7 +2,7 @@ from .hardware import HardwareBase, Hardware, StockStatus, BuildStatus
 from .non_compliance import NonComplianceBase, NonCompliance
 from .production_step import ProductionStepBase, ProductionStep
 from .specification import SpecificationBase, Specification
-from .user_preference import UserPreferenceBase, UserPreference
+from .user_preference import UserPreferenceBase, UserPreference, AppLightingPreference, LanguagePreference
 from .user import UserBase, User, UserRole
 from .measurement import MeasurementBase, Measurement
 from .result import ResultBase, Result
