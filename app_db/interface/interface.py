@@ -1,7 +1,9 @@
 import logging
+from typing import List, Any
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import pandas as pd
 
 from .utils import ip_is_valid, port_is_valid, ip_is_reachable
 
@@ -53,10 +55,20 @@ class AUProductionDB:
     def disconnect(self):
         if self.connected:
             self.session.close()
+            self.engine.dispose()
             logging.info(f'Successfully disconnected from {self.engine.url}')
 
         self.session = None
         self.engine = None
+
+    def read_table_to_df(self, table_name: str) -> pd.DataFrame:
+        try:
+            return pd.read_sql_table(table_name=table_name, con=self.engine)
+        except Exception as e:
+            raise LookupError(f'Unable to read data from {table_name}.')
+
+    def read_table_to_model(self, model: Any) -> List[Any]:
+        return self.session.query(model).all()
 
     @property
     def connected(self) -> bool:
