@@ -2,9 +2,8 @@ from enum import Enum
 
 from shortuuid import ShortUUID
 from sqlalchemy import Column, String, UUID
-from sqlalchemy.ext.declarative import declarative_base
 
-NonComplianceBase = declarative_base()
+from .bases import ProductionBase
 
 class NonComplianceStatus(Enum):
     not_started = 1
@@ -12,8 +11,9 @@ class NonComplianceStatus(Enum):
     abandoned = 3
     resolved = 4
 
-class NonCompliance(NonComplianceBase):
+class NonCompliance(ProductionBase):
     __tablename__ = 'non_compliances'
+
     id = Column(String(6), primary_key=True, nullable=False)
     spec_id = Column(UUID(as_uuid=True), nullable=False)
     result_id = Column(UUID(as_uuid=True), nullable=False)

@@ -4,7 +4,12 @@ from typing import List
 
 from numpy import arange
 
-from app_db.sql_models import UserPreference, UserPreferenceBase, AppLightingPreference, LanguagePreference
+from app_db.sql_models import (
+    UserPreference,
+    AppLightingPreference,
+    LanguagePreference,
+    ProductionBase
+)
 from app_db.interface import AUProductionDB
 
 def setup_logger():
@@ -43,16 +48,15 @@ def create_all_user_preferences() -> List[UserPreference]:
     return user_preferences
 
 def main():
-    # Create new users
-    user_preferences = create_all_user_preferences()
-
     # Connect to database
     au5k_db = AUProductionDB(ip_address='127.0.0.1', port_number=3306, username='root', password='Password123!')
-    au5k_db.connect(database_name='users')
+    au5k_db.connect(database_name='production')
 
-    # Create users table (if it doesn't already exist)
-    UserPreferenceBase.metadata.create_all(au5k_db.engine)
+    # Create tables (if it doesn't already exist)
+    ProductionBase.metadata.create_all(au5k_db.engine)
 
+    # Create new users
+    user_preferences = create_all_user_preferences()
     for user_preference in user_preferences:
         au5k_db.session.add(user_preference)
         au5k_db.session.commit()

@@ -1,12 +1,12 @@
 from uuid import uuid4
 from datetime import datetime
 from sqlalchemy import Column, String, UUID, Integer, DateTime
-from sqlalchemy.ext.declarative import declarative_base
 
-EquipmentBase = declarative_base()
+from .bases import ProductionBase
 
-class Equipment(EquipmentBase):
+class Equipment(ProductionBase):
     __tablename__ = 'equipment'
+
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String(100), nullable=False)
     number = Column(Integer, nullable=False)

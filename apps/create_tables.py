@@ -3,19 +3,7 @@ import argparse
 import logging
 
 from app_db.interface import AUProductionDB
-from app_db.sql_models import (
-    HardwareBase,
-    NonComplianceBase,
-    ProductionStepBase,
-    SpecificationBase,
-    UserPreferenceBase,
-    UserBase,
-    MeasurementBase,
-    ResultBase,
-    EquipmentBase,
-    HardwareModelBase,
-    CommentBase
-)
+from app_db.sql_models import ProductionBase
 
 def setup_logger():
     '''Setup logger for app'''
@@ -63,16 +51,8 @@ def evaluate_args():
 def main(ip_address: str, port_number: int, username: str, password: str):
     production_db = AUProductionDB(ip_address, port_number, username, password)
     production_db.connect(database_name='production')
+    ProductionBase.metadata.create_all(production_db.engine)
 
-    bases = [ResultBase, HardwareBase, NonComplianceBase, ProductionStepBase, ResultBase, HardwareModelBase,
-             SpecificationBase, MeasurementBase, EquipmentBase, CommentBase]
-    for base in bases:
-        base.metadata.create_all(production_db.engine)
-
-    production_db.connect(database_name='users')
-    user_bases = [UserPreferenceBase, UserBase]
-    for base in user_bases:
-        base.metadata.create_all(production_db.engine)
 
     logging.info('All tables created!')
 

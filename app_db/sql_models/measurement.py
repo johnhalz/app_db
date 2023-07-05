@@ -2,16 +2,16 @@ from uuid import uuid4
 from enum import Enum
 
 from sqlalchemy import Column, String, UUID
-from sqlalchemy.ext.declarative import declarative_base
 
-MeasurementBase = declarative_base()
+from .bases import ProductionBase
 
 class MeasurementType(Enum):
     single = 1
     array = 1
 
-class Measurement(MeasurementBase):
+class Measurement(ProductionBase):
     __tablename__ = 'measurements'
+
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String(60), nullable=False)
     measurement_type = Column(String(50), nullable=False)

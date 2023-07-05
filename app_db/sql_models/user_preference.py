@@ -1,18 +1,21 @@
-from uuid import uuid4
+from uuid import uuid4, UUID
 from enum import Enum
 
-from sqlalchemy import Column, String, UUID, Boolean, Integer
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Boolean, Integer, UUID
+from sqlalchemy.orm import relationship
 
-UserPreferenceBase = declarative_base()
+from .bases import ProductionBase
 
-class UserPreference(UserPreferenceBase):
-    __tablename__ = 'user_preferences'
+class UserPreference(ProductionBase):
+    __tablename__ = 'user_preference_table'
+
     id = Column(UUID(as_uuid=True), primary_key=True)
     app_lighting = Column(String(10), nullable=False)
     language = Column(String(10), nullable=False)
     scanner_haptics = Column(Boolean, nullable=False)
     scanner_timeout = Column(Integer, nullable=False)
+
+    user = relationship("User", uselist=False, back_populates="user_preference")
 
     def __init__(self, app_lighting: str = 'System', language: str = 'English',
                  scanner_haptics: bool = True, scanner_timeout: int = 10):

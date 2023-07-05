@@ -1,12 +1,12 @@
 from uuid import uuid4
 
 from sqlalchemy import Column, String, UUID, Integer
-from sqlalchemy.ext.declarative import declarative_base
 
-HardwareModelBase = declarative_base()
+from .bases import ProductionBase
 
-class HardwareModel(HardwareModelBase):
+class HardwareModel(ProductionBase):
     __tablename__ = 'hardware_models'
+
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String(50), nullable=False)
     position = Column(String(50))

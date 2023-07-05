@@ -39,6 +39,14 @@
             "justMyCode": true
         },
         {
+            "name": "Query Users",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/apps/query_user.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "Create User Preferences",
             "type": "python",
             "request": "launch",

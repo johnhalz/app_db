@@ -2,9 +2,8 @@ from uuid import uuid4
 from enum import Enum
 
 from sqlalchemy import Column, String, UUID, Integer
-from sqlalchemy.ext.declarative import declarative_base
 
-HardwareBase = declarative_base()
+from .bases import ProductionBase
 
 class StockStatus(Enum):
     out_of_stock = 1
@@ -17,8 +16,9 @@ class BuildStatus(Enum):
     built = 3
     sent_to_customer = 4
 
-class Hardware(HardwareBase):
+class Hardware(ProductionBase):
     __tablename__ = 'hardware'
+
     id = Column(UUID(as_uuid=True), primary_key=True)
     order_number = Column(Integer, default=None)
     serial_number = Column(String(40), nullable=False)

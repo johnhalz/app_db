@@ -1,13 +1,12 @@
 from uuid import uuid4
-from enum import Enum
 
 from sqlalchemy import Column, String, UUID, Integer
-from sqlalchemy.ext.declarative import declarative_base
 
-CommentBase = declarative_base()
+from .bases import ProductionBase
 
-class Comment(CommentBase):
+class Comment(ProductionBase):
     __tablename__ = 'comments'
+
     id = Column(UUID(as_uuid=True), primary_key=True)
     parent = Column(UUID(as_uuid=True))
     author_id = Column(UUID(as_uuid=True))
