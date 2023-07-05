@@ -50,6 +50,34 @@ def encrypt_string(key: str, input_str: str) -> str:
     cipher_suite = Fernet(urlsafe_b64encode(uuid_key.encode()))
     return cipher_suite.encrypt(input_str.encode()).decode()
 
+def create_random_user(user_preferences: list[UserPreference]) -> User:
+    # Create ID
+    user_id = uuid4()
+
+    # Create random password
+    password_characters = string.ascii_letters + string.digits + string.punctuation
+    unenc_password = pwd.genword(length=8, chars=password_characters)
+
+    # Define if user is external or not
+    external = random.choice([True, False])
+
+    # Define role
+    role_options = [member for member in UserRole]
+
+    # External user cannot be admin
+    if external:
+        role_options = [member for member in UserRole if member != UserRole.admin]
+
+    return User(
+        id=user_id,
+        first_name=get_first_name(),
+        last_name=get_last_name(),
+        encrpyted_password=encrypt_string(key=str(user_id), input_str=unenc_password),
+        role=random.choice(role_options).value,
+        user_preference_id=random.choice(user_preferences).id,
+        external=external
+    )
+
 def main(number_of_users: int):
     # Connect to database
     au5k_db = AUProductionDB(ip_address='127.0.0.1', port_number=3306, username='root', password='Password123!')
@@ -60,21 +88,8 @@ def main(number_of_users: int):
 
     # Create new users
     new_users = []
-    password_characters = string.ascii_letters + string.digits + string.punctuation
     for _ in range(number_of_users):
-        user_id = uuid4()
-        unenc_password = pwd.genword(length=8, chars=password_characters)
-
-        new_users.append(
-            User(
-                id=user_id,
-                first_name=get_first_name(),
-                last_name=get_last_name(),
-                encrpyted_password=encrypt_string(key=str(user_id), input_str=unenc_password),
-                role=random.choice(list(UserRole)).value,
-                user_preference_id=random.choice(user_preferences).id
-            )
-        )
+        new_users.append(create_random_user(user_preferences))
 
     # Create users table (if it doesn't already exist)
     UserBase.metadata.create_all(au5k_db.engine)
@@ -84,7 +99,6 @@ def main(number_of_users: int):
         au5k_db.session.commit()
 
     au5k_db.disconnect()
-
 
 if __name__ == '__main__':
     setup_logger()
