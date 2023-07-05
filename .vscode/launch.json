@@ -25,7 +25,7 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/apps/create_hardware_models.py",
-            "args": ["-m", "4", "-p", "1"],
+            "args": ["-v", "1"],
             "console": "integratedTerminal",
             "justMyCode": true
         },
