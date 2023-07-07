@@ -53,7 +53,6 @@ def main(ip_address: str, port_number: int, username: str, password: str):
     production_db.connect(database_name='production')
     ProductionBase.metadata.create_all(production_db.engine)
 
-
     logging.info('All tables created!')
 
     production_db.disconnect()

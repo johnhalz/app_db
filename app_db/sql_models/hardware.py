@@ -1,39 +1,49 @@
 from uuid import uuid4
 from enum import Enum
 
-from sqlalchemy import Column, String, UUID, Integer
+from sqlalchemy import Column, String, UUID, Integer, ForeignKey
+from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+from .hardware_model import HardwareModel
+
 class StockStatus(Enum):
-    out_of_stock = 1
-    ordered = 2
-    parts_available = 3
+    out_of_stock = 'Out of Stock'
+    ordered = 'Ordered'
+    parts_available = 'Parts Available'
 
 class BuildStatus(Enum):
-    not_started = 1
-    building = 2
-    built = 3
-    sent_to_customer = 4
+    not_started = 'Not Started'
+    building = 'Building'
+    built = 'Built'
+    sent_to_customer = 'Sent to Customer'
 
 class Hardware(ProductionBase):
-    __tablename__ = 'hardware'
+    __tablename__ = 'hardware_table'
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     order_number = Column(Integer, default=None)
     serial_number = Column(String(40), nullable=False)
     stock_status = Column(String(50), nullable=False)
     build_status = Column(String(50), nullable=False)
-    hardware_model_id = Column(UUID(as_uuid=True), nullable=False)
     set_number = Column(Integer)
+
+    result = relationship('Result', uselist=False, back_populates='hardware')
+    production_step = relationship('ProductionStep', uselist=False, back_populates='hardware')
+
+    hardware_model_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'))
+    hardware_model = relationship('HardwareModel', uselist=False, back_populates='hardware')
 
     def __init__(self, order_number: int, serial_number: str,
                  stock_status: StockStatus, build_status: BuildStatus,
-                 hardware_model_id: UUID, set_number: int = None):
+                 hardware_model: HardwareModel, set_number: int = None):
         self.id = uuid4()
         self.order_number = order_number
         self.serial_number = serial_number
-        self.stock_status = stock_status.name
-        self.build_status = build_status.name
-        self.hardware_model_id = hardware_model_id
+        self.stock_status = stock_status.value
+        self.build_status = build_status.value
         self.set_number = set_number
+
+        self.hardware_model = hardware_model
+        self.hardware_model_id = hardware_model.id

@@ -6,6 +6,15 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+class AppLightingPreference(Enum):
+    system = 'System'
+    light = 'Light'
+    dark = 'Dark'
+
+class LanguagePreference(Enum):
+    english = 'English'
+    deutsch = 'Deutsch'
+
 class UserPreference(ProductionBase):
     __tablename__ = 'user_preference_table'
 
@@ -15,7 +24,7 @@ class UserPreference(ProductionBase):
     scanner_haptics = Column(Boolean, nullable=False)
     scanner_timeout = Column(Integer, nullable=False)
 
-    user = relationship("User", uselist=False, back_populates="user_preference")
+    user = relationship('User', uselist=False, back_populates='user_preference')
 
     def __init__(self, app_lighting: str = 'System', language: str = 'English',
                  scanner_haptics: bool = True, scanner_timeout: int = 10):
@@ -24,12 +33,3 @@ class UserPreference(ProductionBase):
         self.language = language
         self.scanner_haptics = scanner_haptics
         self.scanner_timeout = scanner_timeout
-
-class AppLightingPreference(Enum):
-    system = 'System'
-    light = 'Light'
-    dark = 'Dark'
-
-class LanguagePreference(Enum):
-    english = 'English'
-    deutsch = 'Deutsch'

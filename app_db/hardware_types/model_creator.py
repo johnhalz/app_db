@@ -1,8 +1,8 @@
 from typing import List, Union
 from uuid import UUID
 
-from app_db.hardware_model import MirrorType, MGCSize, VCMSize
 from app_db.sql_models import HardwareModel
+from app_db.hardware_types import MirrorType, MGCSize, VCMSize
 
 class ModelCreator:
     def __init__(self, mirror: MirrorType, version: int) -> None:

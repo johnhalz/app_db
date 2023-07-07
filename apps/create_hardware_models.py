@@ -3,7 +3,7 @@ import argparse
 from typing import List
 
 from app_db.interface import AUProductionDB
-from app_db.hardware_model import ModelCreator, MirrorType, MGCSize, VCMSize
+from app_db.hardware_types import ModelCreator, MirrorType, MGCSize, VCMSize
 from app_db.sql_models import HardwareModel, HardwareModelBase
 
 def setup_logger():

@@ -1,35 +1,49 @@
 from enum import Enum
+from uuid import uuid4
 
-from shortuuid import ShortUUID
-from sqlalchemy import Column, String, UUID
+from sqlalchemy import Column, String, UUID, ForeignKey
+from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
+from .result import Result
+from .user import User
 
 class NonComplianceStatus(Enum):
-    not_started = 1
-    in_review = 2
-    abandoned = 3
-    resolved = 4
+    not_started = 'Not Started'
+    in_review = 'In Review'
+    abandoned = 'Abandoned'
+    resolved = 'Resolved'
+    fix_in_progress = 'Fix in Progress'
 
 class NonCompliance(ProductionBase):
-    __tablename__ = 'non_compliances'
+    __tablename__ = 'non_compliance_table'
 
-    id = Column(String(6), primary_key=True, nullable=False)
-    spec_id = Column(UUID(as_uuid=True), nullable=False)
-    result_id = Column(UUID(as_uuid=True), nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, nullable=False)
     status = Column(String(50), nullable=False)
     decision = Column(String(400))
-    reporter_id = Column(UUID(as_uuid=True), nullable=False)
-    signer_id = Column(UUID(as_uuid=True))
 
-    def __init__(self, spec_id: UUID, result_id: UUID, reporter_id: UUID, signer_id: UUID,
-                 status: NonComplianceStatus = NonComplianceStatus.not_started,
-                 decision: str = '', comments: str = ''):
-        self.id = ShortUUID().random(length=6)
-        self.spec_id = spec_id
-        self.result_id = result_id
-        self.reporter_id = reporter_id
-        self.signer_id = signer_id
-        self.status = status.name
+    comment = relationship('Comment', back_populates='non_compliance')
+
+    result_id = Column(UUID(as_uuid=True), ForeignKey('specification_table.id'))
+    result = relationship('Result', back_populates='non_compliance')
+
+    reporter_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
+    reporter = relationship('User', back_populates='non_compliance')
+
+    signer_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
+    signer = relationship('User', back_populates='non_compliance')
+
+    def __init__(self, status: NonComplianceStatus, result: Result, reporter: User, signer: User = None, decision: str = ''):
+        self.id = uuid4()
+        self.status = status.value
+
+        self.result = result
+        self.result_id = result.id
+
+        self.reporter = reporter
+        self.reporter_id = reporter.id
+
+        self.signer = signer
+        self.signer_id = signer.id
+
         self.decision = decision
-        self.comments = comments

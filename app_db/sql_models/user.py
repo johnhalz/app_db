@@ -26,6 +26,11 @@ class User(ProductionBase):
     role = Column(String(50), nullable=False)
     external = Column(Boolean, nullable=False)
 
+    comment = relationship('Comment', back_populates='user')
+    non_compliance_reporter = relationship('NonCompliance', back_populates='user')
+    non_compliance_signer = relationship('NonCompliance', back_populates='user')
+    production_step_oprator = relationship('ProductionStep', back_populates='user')
+
     user_preference_id = Column(UUID(as_uuid=True), ForeignKey('user_preference_table.id'))
     user_preference = relationship('UserPreference', back_populates='user')
 

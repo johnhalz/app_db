@@ -1,36 +1,54 @@
 from uuid import uuid4
-from sqlalchemy import Column, String, UUID
+from enum import Enum
+
+from sqlalchemy import Column, String, UUID, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
 from .user import User
-from .equipment import Equipment
 from .hardware import Hardware
+from .production_step_model import ProductionStepModel
+
+class ProductionStepStatus(Enum):
+    not_started = 'Not Started'
+    in_progress = 'In Progress'
+    complete = 'Complete'
+    paused = 'Paused'
+    stopped = 'Stopped'
+    abandoned = 'Abandoned'
 
 class ProductionStep(ProductionBase):
-    __tablename__ = 'production_steps'
+    __tablename__ = 'production_step_table'
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(String(40), nullable=False)
-    hardware_id = Column(UUID(as_uuid=True), nullable=False)
-    equipment_id = Column(UUID(as_uuid=True))
-    operator_id = Column(UUID(as_uuid=True), nullable=False)
-    parent_id = Column(UUID(as_uuid=True))
+    status = Column(String(50), nullable=False)
+    start_timestamp = Column(DateTime, nullable=False)
 
-    # hardware: Hardware = None
-    # equipment: Equipment = None
-    # operator: User = None
+    measurement = relationship('Measurement', uselist=False, back_populates='production_step')
+    picture = relationship('Picture', uselist=False, back_populates='production_step')
 
-    def __init__(self, name: str, hardware: Hardware, equipment: Equipment, operator: User, parent_id: UUID = None):
+    hardware_id = Column(UUID(as_uuid=True), ForeignKey('hardware_table.id'))
+    hardware = relationship('Hardware', back_populates='production_step')
+
+    production_step_model_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model_table.id'))
+    production_step_model = relationship('ProductionStepModel', back_populates='production_step')
+
+    operator_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
+    operator = relationship('Operator', back_populates='production_step')
+
+    def __init__(self, name: str, status: ProductionStepStatus, hardware: Hardware,
+                 operator: User, production_step_model: ProductionStepModel):
         self.id = uuid4()
         self.name = name
-        self.parent_id = parent_id
+        self.status = status.value
 
-        # self.equipment = equipment
-        # self.equipment_id = self.equipment.id
+        self.hardware = hardware
+        self.hardware_id = hardware.id
 
-        # self.operator = operator
-        # self.operator_id = self.operator.id
+        self.operator = operator
+        self.operator_id = operator.id
 
-        # self.hardware = hardware
-        # self.hardware_id = self.hardware.id
+        self.production_step_model = production_step_model
+        self.production_step_model_id = production_step_model.id
