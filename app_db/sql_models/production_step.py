@@ -8,7 +8,6 @@ from .bases import ProductionBase
 
 from .user import User
 from .hardware import Hardware
-from .production_step_model import ProductionStepModel
 
 class ProductionStepStatus(Enum):
     not_started = 'Not Started'
@@ -36,10 +35,10 @@ class ProductionStep(ProductionBase):
     production_step_model = relationship('ProductionStepModel', back_populates='production_step')
 
     operator_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
-    operator = relationship('Operator', back_populates='production_step')
+    operator = relationship('User', back_populates='production_step_operator')
 
     def __init__(self, name: str, status: ProductionStepStatus, hardware: Hardware,
-                 operator: User, production_step_model: ProductionStepModel):
+                 operator: User, production_step_model):
         self.id = uuid4()
         self.name = name
         self.status = status.value

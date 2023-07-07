@@ -6,7 +6,6 @@ from sqlalchemy import Column, String, UUID, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-from .production_step import ProductionStep
 
 class Measurement(ProductionBase):
     __tablename__ = 'measurement_table'
@@ -21,7 +20,7 @@ class Measurement(ProductionBase):
     production_step_id = Column(UUID(as_uuid=True), ForeignKey('production_step_table.id'))
     production_step = relationship('ProductionStep', uselist=False, back_populates='measurement')
 
-    def __init__(self, name: str, measurement_file: Path, production_step: ProductionStep,
+    def __init__(self, name: str, measurement_file: Path, production_step,
                  creation_timestamp: datetime = datetime.now()):
         self.id = uuid4()
         self.name = name

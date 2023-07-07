@@ -23,7 +23,7 @@ class Equipment(ProductionBase):
     status = Column(String(50), nullable=False)
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('equipment_table.id'))
-    parent = relationship('Equipment', backref='parent', remote_side=[id])
+    child_equipment = relationship('Equipment', backref='parent', remote_side=[id])
 
     production_step_model = relationship('ProductionStepModel', uselist=False, back_populates='equipment')
 

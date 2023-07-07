@@ -6,9 +6,6 @@ from sqlalchemy import Column, String, UUID, DateTime, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-from .specification import Specification
-from .hardware import Hardware
-from .measurement import Measurement
 
 class Result(ProductionBase):
     __tablename__ = 'result_table'
@@ -30,7 +27,7 @@ class Result(ProductionBase):
     measurement_id = Column(UUID(as_uuid=True), ForeignKey('measurement_table.id'))
     measurement = relationship('Measurement', back_populates='result')
 
-    def __init__(self, name: str, hardware: Hardware, specification: Specification, measurement: Measurement,
+    def __init__(self, name: str, hardware, specification, measurement,
                  result_file: Path, version: int, creation_timestamp: datetime = datetime.now()):
         self.id = uuid4()
         self.creation_timestamp = creation_timestamp

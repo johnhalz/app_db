@@ -4,7 +4,6 @@ from sqlalchemy import Column, String, UUID, Float, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-from .hardware_model import HardwareModel
 
 class Specification(ProductionBase):
     __tablename__ = 'specification_table'
@@ -22,7 +21,7 @@ class Specification(ProductionBase):
     hardware_model_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'), nullable=False)
     hardware_model = relationship('HardwareModel', back_populates='specification')
 
-    def __init__(self, name: str, min_value: float, max_value: float, hardware_model: HardwareModel,
+    def __init__(self, name: str, min_value: float, max_value: float, hardware_model,
                  description: str = None, unit: str = None, version: int = 1):
         self.id = uuid4()
         self.name = name

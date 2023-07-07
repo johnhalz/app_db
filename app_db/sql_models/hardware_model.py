@@ -4,7 +4,6 @@ from sqlalchemy import Column, String, UUID, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-# from app_db.hardware_types import MirrorType
 
 class HardwareModel(ProductionBase):
     __tablename__ = 'hardware_model_table'
@@ -16,9 +15,11 @@ class HardwareModel(ProductionBase):
     mirror = Column(Integer, nullable=False)
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'))
-    parent = relationship('HardwareModel', backref='parent', remote_side=[id])
+    child_models = relationship('HardwareModel', backref='parent', remote_side=[id])
 
     hardware = relationship('Hardware', uselist=False, back_populates='hardware_model')
+    specification = relationship('Specification', uselist=False, back_populates='hardware_model')
+    production_step_model = relationship('ProductionStepModel', uselist=False, back_populates='hardware_model')
 
     def __init__(self, name: str, version: int, mirror, position: str = None, parent = None):
         self.id = uuid4()

@@ -10,6 +10,7 @@ from .result import Result
 from .equipment import Equipment
 from .hardware_model import HardwareModel
 from .comment import Comment
+from .picture import Picture
 from .user_preference import (
     UserPreference,
     AppLightingPreference,

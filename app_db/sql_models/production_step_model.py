@@ -5,9 +5,6 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
-from .equipment import Equipment
-from .hardware_model import HardwareModel
-
 class ProductionStepModel(ProductionBase):
     __tablename__ = 'production_step_model_table'
 
@@ -25,10 +22,10 @@ class ProductionStepModel(ProductionBase):
     hardware_model = relationship('HardwareModel', back_populates='production_step_model')
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model_table.id'))
-    parent = relationship('ProductionStepModel', backref='parent', remote_side=[id])
+    child_step = relationship('ProductionStepModel', backref='parent', remote_side=[id])
 
-    def __init__(self, name: str, step_number: int, hardware_model: HardwareModel,
-                 equipment: Equipment, version: int = 1, parent = None):
+    def __init__(self, name: str, step_number: int, hardware_model,
+                 equipment, version: int = 1, parent = None):
         self.id = uuid4()
         self.name = name
         self.version = version

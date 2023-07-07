@@ -6,8 +6,6 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
-from .hardware_model import HardwareModel
-
 class StockStatus(Enum):
     out_of_stock = 'Out of Stock'
     ordered = 'Ordered'
@@ -31,13 +29,14 @@ class Hardware(ProductionBase):
 
     result = relationship('Result', uselist=False, back_populates='hardware')
     production_step = relationship('ProductionStep', uselist=False, back_populates='hardware')
+    picture = relationship('Picture', uselist=False, back_populates='hardware')
 
     hardware_model_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'))
     hardware_model = relationship('HardwareModel', uselist=False, back_populates='hardware')
 
     def __init__(self, order_number: int, serial_number: str,
                  stock_status: StockStatus, build_status: BuildStatus,
-                 hardware_model: HardwareModel, set_number: int = None):
+                 hardware_model, set_number: int = None):
         self.id = uuid4()
         self.order_number = order_number
         self.serial_number = serial_number

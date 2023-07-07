@@ -5,7 +5,7 @@ from sqlalchemy import Column, String, Boolean, ForeignKey, UUID
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-from .user_preference import UserPreference
+from .non_compliance import NonCompliance
 
 class UserRole(Enum):
     admin = 'Admin'
@@ -26,16 +26,16 @@ class User(ProductionBase):
     role = Column(String(50), nullable=False)
     external = Column(Boolean, nullable=False)
 
-    comment = relationship('Comment', back_populates='user')
-    non_compliance_reporter = relationship('NonCompliance', back_populates='user')
-    non_compliance_signer = relationship('NonCompliance', back_populates='user')
-    production_step_oprator = relationship('ProductionStep', back_populates='user')
+    comments = relationship('Comment', back_populates='author')
+    non_compliance_reporter = relationship('NonCompliance', back_populates='reporter', foreign_keys=[NonCompliance.reporter_id])
+    non_compliance_signer = relationship('NonCompliance', back_populates='signer', foreign_keys=[NonCompliance.signer_id])
+    production_step_operator = relationship('ProductionStep', back_populates='operator')
 
     user_preference_id = Column(UUID(as_uuid=True), ForeignKey('user_preference_table.id'))
     user_preference = relationship('UserPreference', back_populates='user')
 
-    def __init__(self, first_name: str, last_name: str, encrpyted_password: str,
-                 user_preference: UserPreference, role: str, id: UUID = uuid4(), username: str = None, external: bool = False):
+    def __init__(self, first_name: str, last_name: str, encrpyted_password: str, user_preference,
+                 role: str, id: UUID = uuid4(), username: str = None, external: bool = False):
         self.id = id
         self.first_name = first_name
         self.last_name = last_name

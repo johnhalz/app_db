@@ -5,8 +5,6 @@ from sqlalchemy import Column, String, UUID, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-from .result import Result
-from .user import User
 
 class NonComplianceStatus(Enum):
     not_started = 'Not Started'
@@ -20,22 +18,26 @@ class NonCompliance(ProductionBase):
 
     id = Column(UUID(as_uuid=True), primary_key=True, nullable=False)
     status = Column(String(50), nullable=False)
-    decision = Column(String(400))
+    description = Column(String(500))
+    decision = Column(String(500))
 
     comment = relationship('Comment', back_populates='non_compliance')
 
-    result_id = Column(UUID(as_uuid=True), ForeignKey('specification_table.id'))
-    result = relationship('Result', back_populates='non_compliance')
+    result_id = Column(UUID(as_uuid=True), ForeignKey('result_table.id'))
+    result = relationship('Result', uselist=False, back_populates='non_compliance')
 
     reporter_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
-    reporter = relationship('User', back_populates='non_compliance')
+    reporter = relationship('User', uselist=False, back_populates='non_compliance_reporter', foreign_keys=[reporter_id])
 
     signer_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
-    signer = relationship('User', back_populates='non_compliance')
+    signer = relationship('User', uselist=False, back_populates='non_compliance_signer', foreign_keys=[signer_id])
 
-    def __init__(self, status: NonComplianceStatus, result: Result, reporter: User, signer: User = None, decision: str = ''):
+    def __init__(self, status: NonComplianceStatus, result, reporter,
+                 signer = None, decision: str = '', description: str = ''):
         self.id = uuid4()
         self.status = status.value
+        self.decision = decision
+        self.description = description
 
         self.result = result
         self.result_id = result.id
@@ -46,4 +48,3 @@ class NonCompliance(ProductionBase):
         self.signer = signer
         self.signer_id = signer.id
 
-        self.decision = decision

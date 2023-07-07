@@ -6,8 +6,6 @@ from sqlalchemy import Column, String, UUID, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-from .hardware import Hardware
-from .production_step import ProductionStep
 
 class Picture(ProductionBase):
     __tablename__ = 'picture_table'
@@ -17,12 +15,12 @@ class Picture(ProductionBase):
     creation_timestamp = Column(DateTime, nullable=False)
 
     hardware_id = Column(UUID(as_uuid=True), ForeignKey('hardware_table.id'))
-    hardware = relationship('Hardware', uselist=False, back_populates='result')
+    hardware = relationship('Hardware', uselist=False, back_populates='picture')
 
     production_step_id = Column(UUID(as_uuid=True), ForeignKey('production_step_table.id'))
     production_step = relationship('ProductionStep', uselist=False, back_populates='picture')
 
-    def __init__(self, hardware: Hardware, production_step: ProductionStep,
+    def __init__(self, hardware, production_step,
                  photo_path: Path, creation_timestamp: datetime = datetime.now()):
         self.id = uuid4()
         self.creation_timestamp = creation_timestamp
