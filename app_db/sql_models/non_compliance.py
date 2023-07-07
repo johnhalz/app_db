@@ -48,3 +48,7 @@ class NonCompliance(ProductionBase):
         self.signer = signer
         self.signer_id = signer.id
 
+    @property
+    def short_id(self) -> str:
+        return str(self.id.fields[1])
+
