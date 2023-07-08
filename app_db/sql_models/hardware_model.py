@@ -15,7 +15,6 @@ class HardwareModel(ProductionBase):
     mirror = Column(Integer, nullable=False)
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'))
-    child_models = relationship('HardwareModel', backref='parent', remote_side=[id])
 
     hardware = relationship('Hardware', uselist=False, back_populates='hardware_model')
     specification = relationship('Specification', uselist=False, back_populates='hardware_model')
@@ -27,4 +26,7 @@ class HardwareModel(ProductionBase):
         self.version = version
         self.mirror = mirror.value
         self.position = position
-        self.parent = parent
+        if parent is None:
+            self.parent_id = None
+        else:
+            self.parent_id = parent.id

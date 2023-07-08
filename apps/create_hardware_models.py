@@ -4,7 +4,7 @@ from typing import List
 
 from app_db.interface import AUProductionDB
 from app_db.hardware_types import ModelCreator, MirrorType, MGCSize, VCMSize
-from app_db.sql_models import HardwareModel, HardwareModelBase
+from app_db.sql_models import HardwareModel, ProductionBase
 
 def setup_logger():
     '''Setup logger for app'''
@@ -144,7 +144,7 @@ def main(version: int):
     au5k_db.connect(database_name='production')
 
     # Create hardware_models table (if it doesn't already exist)
-    HardwareModelBase.metadata.create_all(au5k_db.engine)
+    ProductionBase.metadata.create_all(au5k_db.engine)
 
     for hardware_model in au_models:
         au5k_db.session.add(hardware_model)
