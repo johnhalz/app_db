@@ -4,5 +4,6 @@ services:
     image: mariadb/maxscale:latest
     ports:
       - "4006:4006"
+      - "8989:8989"
     volumes:
       - ./maxscale.cnf:/Users/johnhalazonetis/dev/app_db/config/maxscale.cnf

@@ -27,3 +27,25 @@ type=listener
 service=Read-Write-Service
 protocol=MariaDBClient
 port=4006
+
+[MaxAdmin Service]
+type=service
+router=cli
+user=maxscale_admin
+passwd=secretpasswd
+
+[MaxAdmin Listener]
+type=listener
+service=MaxAdmin Service
+protocol=HTTPD
+port=8989
+
+[admin]
+type=service
+router=readconnroute
+users=your_user
+passwd=your_password
+
+[Your_User]
+type=admin
+passwd=your_password

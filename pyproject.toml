@@ -16,6 +16,7 @@ passlib = "^1.7.4"
 cryptography = "^41.0.1"
 numpy = "^1.25.0"
 pandas = "^2.0.3"
+requests = "^2.31.0"
 
 
 [tool.poetry.group.dev.dependencies]
