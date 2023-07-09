@@ -1,0 +1,17 @@
+version: '3'
+services:
+  mdb:
+    image: mariadb:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Password123!
+
+  maxscale:
+    image: mariadb/maxscale:latest
+    depends_on:
+      - mdb
+    ports:
+      - "4006:4006"
+    volumes:
+      - ./maxscale.cnf:~/dev/app_db/config/maxscale.cnf
