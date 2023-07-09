@@ -22,7 +22,6 @@ class ProductionStepModel(ProductionBase):
     hardware_model = relationship('HardwareModel', back_populates='production_step_model')
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model_table.id'))
-    child_step = relationship('ProductionStepModel', backref='parent', remote_side=[id])
 
     def __init__(self, name: str, step_number: int, hardware_model,
                  equipment, version: int = 1, parent = None):
@@ -30,10 +29,14 @@ class ProductionStepModel(ProductionBase):
         self.name = name
         self.version = version
         self.step_number = step_number
-        self.parent = parent
 
         self.hardware_model = hardware_model
         self.hardware_model_id = hardware_model.id
 
         self.equipment = equipment
         self.equipment_id = equipment.id
+
+        if parent is None:
+            self.parent_id = None
+        else:
+            self.parent_id = parent.id

@@ -12,7 +12,6 @@ class Comment(ProductionBase):
     content = Column(String(500), nullable=False)
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('comment_table.id'))
-    child_comments = relationship('Comment', backref='parent', remote_side=[id])
 
     author_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
     author = relationship('User', uselist=False, back_populates='comments')
@@ -23,8 +22,12 @@ class Comment(ProductionBase):
     def __init__(self, author, content: str, non_compliance, parent = None):
         self.id = uuid4()
         self.content = content
-        self.parent = parent
         self.non_compliance = non_compliance
 
         self.author = author
         self.author_id = author.id
+
+        if parent is None:
+            self.parent_id = None
+        else:
+            self.parent_id = parent.id

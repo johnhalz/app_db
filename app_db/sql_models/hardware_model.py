@@ -26,6 +26,7 @@ class HardwareModel(ProductionBase):
         self.version = version
         self.mirror = mirror.value
         self.position = position
+
         if parent is None:
             self.parent_id = None
         else:

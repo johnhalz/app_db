@@ -23,7 +23,6 @@ class Equipment(ProductionBase):
     status = Column(String(50), nullable=False)
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('equipment_table.id'))
-    child_equipment = relationship('Equipment', backref='parent', remote_side=[id])
 
     production_step_model = relationship('ProductionStepModel', uselist=False, back_populates='equipment')
 
@@ -34,4 +33,8 @@ class Equipment(ProductionBase):
         self.number = number
         self.calibration_timestamp = calibration_timestamp
         self.status = status.value
-        self.parent = parent
+
+        if parent is None:
+            self.parent_id = parent.id
+        else:
+            self.parent_id = None
