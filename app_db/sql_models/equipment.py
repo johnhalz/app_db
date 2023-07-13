@@ -35,6 +35,6 @@ class Equipment(ProductionBase):
         self.status = status.value
 
         if parent is None:
-            self.parent_id = parent.id
-        else:
             self.parent_id = None
+        else:
+            self.parent_id = parent.id
