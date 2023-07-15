@@ -11,9 +11,12 @@ from .equipment import Equipment
 from .hardware_model import HardwareModel
 from .comment import Comment
 from .picture import Picture
+from .order import Order
 from .user_preference import (
     UserPreference,
     AppLightingPreference,
     LanguagePreference
 )
 from .user import User, UserRole
+from .measurement_result_junction import MeasurementResultJunction
+from .specification_result_junction import SpecificationResultJunction

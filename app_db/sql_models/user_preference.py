@@ -1,35 +1,32 @@
-from uuid import uuid4, UUID
+from uuid import uuid4
 from enum import Enum
 
 from sqlalchemy import Column, String, Boolean, Integer, UUID
-from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
 class AppLightingPreference(Enum):
-    system = 'System'
-    light = 'Light'
-    dark = 'Dark'
+    SYSTEM = 'System'
+    LIGHT = 'Light'
+    DARK = 'Dark'
 
 class LanguagePreference(Enum):
-    english = 'English'
-    deutsch = 'Deutsch'
+    ENGLISH = 'English'
+    DEUTSCH = 'Deutsch'
 
 class UserPreference(ProductionBase):
     __tablename__ = 'user_preference_table'
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
-    app_lighting = Column(String(10), nullable=False)
-    language = Column(String(10), nullable=False)
-    scanner_haptics = Column(Boolean, nullable=False)
-    scanner_timeout = Column(Integer, nullable=False)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    app_lighting_string = Column(String(10), nullable=False, default='System')
+    language_string = Column(String(10), nullable=False, default='English')
+    scanner_haptics = Column(Boolean, nullable=False, default=True)
+    scanner_timeout = Column(Integer, nullable=False, default=10)
 
-    user = relationship('User', uselist=False, back_populates='user_preference')
+    @property
+    def app_lighting(self) -> AppLightingPreference:
+        return AppLightingPreference(self.app_lighting_string)
 
-    def __init__(self, app_lighting: str = 'System', language: str = 'English',
-                 scanner_haptics: bool = True, scanner_timeout: int = 10):
-        self.id = uuid4()
-        self.app_lighting = app_lighting
-        self.language = language
-        self.scanner_haptics = scanner_haptics
-        self.scanner_timeout = scanner_timeout
+    @property
+    def language(self) -> LanguagePreference:
+        return LanguagePreference(self.language_string)

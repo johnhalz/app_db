@@ -8,26 +8,14 @@ from .bases import ProductionBase
 class Comment(ProductionBase):
     __tablename__ = 'comment_table'
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     content = Column(String(500), nullable=False)
 
     parent_id = Column(UUID(as_uuid=True), ForeignKey('comment_table.id'))
+    parent = relationship('Comment', foreign_keys=[parent_id])
 
     author_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
-    author = relationship('User', uselist=False, back_populates='comments')
+    author = relationship('User', foreign_keys=[author_id])
 
     non_compliance_id = Column(UUID(as_uuid=True), ForeignKey('non_compliance_table.id'))
-    non_compliance = relationship('NonCompliance', back_populates='comment')
-
-    def __init__(self, author, content: str, non_compliance, parent = None):
-        self.id = uuid4()
-        self.content = content
-        self.non_compliance = non_compliance
-
-        self.author = author
-        self.author_id = author.id
-
-        if parent is None:
-            self.parent_id = None
-        else:
-            self.parent_id = parent.id
+    non_compliance = relationship('NonCompliance', foreign_keys=[non_compliance_id])

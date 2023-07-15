@@ -5,58 +5,37 @@ from sqlalchemy import Column, String, Boolean, ForeignKey, UUID
 from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
-from .non_compliance import NonCompliance
 
 class UserRole(Enum):
-    admin = 'Admin'
-    system_engineer = 'System Engineer'
-    test_engineer = 'Test Engineer'
-    data_scientist = 'Data Scientist'
-    test_operator = 'Test Operator'
-    mechanic = 'Mechanic'
+    ADMIN = 'Admin'
+    SYSTEM_ENGINEER = 'System Engineer'
+    TEST_ENGINEER = 'Test Engineer'
+    DATA_SCIENTIST = 'Data Scientist'
+    TEST_OPERATOR = 'Test Operator'
+    MECHANIC = 'Mechanic'
 
 class User(ProductionBase):
     __tablename__ = 'user_table'
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     first_name = Column(String(50), nullable=False)
     last_name = Column(String(50), nullable=False)
-    username = Column(String(150), nullable=False)
+    external = Column(Boolean, nullable=False, default=False)
+    username = Column(String(150), nullable=False, default='')
     encrypted_pw = Column(String(256), nullable=False)
-    role = Column(String(50), nullable=False)
-    external = Column(Boolean, nullable=False)
-
-    comments = relationship('Comment', back_populates='author')
-    non_compliance_reporter = relationship('NonCompliance', back_populates='reporter', foreign_keys=[NonCompliance.reporter_id])
-    non_compliance_signer = relationship('NonCompliance', back_populates='signer', foreign_keys=[NonCompliance.signer_id])
-    production_step_operator = relationship('ProductionStep', back_populates='operator')
-
+    role_string = Column(String(50), nullable=False)
     user_preference_id = Column(UUID(as_uuid=True), ForeignKey('user_preference_table.id'))
-    user_preference = relationship('UserPreference', back_populates='user')
 
-    def __init__(self, first_name: str, last_name: str, encrpyted_password: str, user_preference,
-                 role: str, id: UUID = uuid4(), username: str = None, external: bool = False):
-        self.id = id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.encrypted_pw = encrpyted_password
-        self.role = role
-        self.external = external
-        self.username = self.__define_username(username)
-        self.user_preference_id = user_preference.id
+    user_preference = relationship('UserPreference', foreign_keys=[user_preference_id])
 
-    def __define_username(self, username: str = None) -> str:
-        if username is None:
-            if self.first_name is None or self.last_name is None:
-                raise ValueError(
-                    'First and last names must be set in order to define a username!'
-                )
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        if self.username == '':
+            self.username = self.__default_username()
 
-            username = f'{self.first_name}.{self.last_name}'.lower()
+    def __default_username(self) -> str:
+        return f'{self.first_name}.{self.last_name}'.lower()
 
-            if self.external:
-                username = 'extern.' + username
-
-            return username
-
-        return username
+    @property
+    def role(self) -> UserRole:
+        return UserRole(self.role_string)

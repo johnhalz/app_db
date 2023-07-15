@@ -8,35 +8,16 @@ from .bases import ProductionBase
 class ProductionStepModel(ProductionBase):
     __tablename__ = 'production_step_model_table'
 
-    id = Column(UUID(as_uuid=True), primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String(40), nullable=False)
-    version = Column(Integer, nullable=False)
+    version = Column(Integer, nullable=False, default=1)
     step_number = Column(Integer, nullable=False)
 
-    production_step = relationship('ProductionStep', uselist=False, back_populates='production_step_model')
-
     equipment_id = Column(UUID(as_uuid=True), ForeignKey('equipment_table.id'))
-    equipment = relationship('Equipment', back_populates='production_step_model')
+    equipment = relationship('Equipment', foreign_keys=[equipment_id])
 
     hardware_model_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'))
-    hardware_model = relationship('HardwareModel', back_populates='production_step_model')
+    hardware_model = relationship('HardwareModel', foreign_keys=[hardware_model_id])
 
-    parent_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model_table.id'))
-
-    def __init__(self, name: str, step_number: int, hardware_model,
-                 equipment, version: int = 1, parent = None):
-        self.id = uuid4()
-        self.name = name
-        self.version = version
-        self.step_number = step_number
-
-        self.hardware_model = hardware_model
-        self.hardware_model_id = hardware_model.id
-
-        self.equipment = equipment
-        self.equipment_id = equipment.id
-
-        if parent is None:
-            self.parent_id = None
-        else:
-            self.parent_id = parent.id
+    parent_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model_table.id'), nullable=True, default=None)
+    parent = relationship('ProductionStepModel', foreign_keys=[parent_id])

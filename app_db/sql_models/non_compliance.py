@@ -7,48 +7,33 @@ from sqlalchemy.orm import relationship
 from .bases import ProductionBase
 
 class NonComplianceStatus(Enum):
-    not_started = 'Not Started'
-    in_review = 'In Review'
-    abandoned = 'Abandoned'
-    resolved = 'Resolved'
-    fix_in_progress = 'Fix in Progress'
+    NOT_REVIEWED = 'Not Reviewed'
+    IN_REVIEW = 'In Review'
+    FIX_IN_PROGRESS = 'Fix in Progress'
+    RESOLVED = 'Resolved'
+    ABANDONED = 'Abandoned'
 
 class NonCompliance(ProductionBase):
     __tablename__ = 'non_compliance_table'
 
-    id = Column(UUID(as_uuid=True), primary_key=True, nullable=False)
-    status = Column(String(50), nullable=False)
-    description = Column(String(500))
-    decision = Column(String(500))
-
-    comment = relationship('Comment', back_populates='non_compliance')
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    status_string = Column(String(50), nullable=False)
+    description = Column(String(1000), default='')
+    decision = Column(String(500), default='')
 
     result_id = Column(UUID(as_uuid=True), ForeignKey('result_table.id'))
-    result = relationship('Result', uselist=False, back_populates='non_compliance')
+    result = relationship('Result', foreign_keys=[result_id])
 
     reporter_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
-    reporter = relationship('User', uselist=False, back_populates='non_compliance_reporter', foreign_keys=[reporter_id])
+    reporter = relationship('User', foreign_keys=[reporter_id])
 
     signer_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
-    signer = relationship('User', uselist=False, back_populates='non_compliance_signer', foreign_keys=[signer_id])
-
-    def __init__(self, status: NonComplianceStatus, result, reporter,
-                 signer = None, decision: str = '', description: str = ''):
-        self.id = uuid4()
-        self.status = status.value
-        self.decision = decision
-        self.description = description
-
-        self.result = result
-        self.result_id = result.id
-
-        self.reporter = reporter
-        self.reporter_id = reporter.id
-
-        self.signer = signer
-        self.signer_id = signer.id
+    signer = relationship('User', foreign_keys=[signer_id])
 
     @property
     def short_id(self) -> str:
         return str(self.id.fields[1])
 
+    @property
+    def status(self) -> NonComplianceStatus:
+        return NonComplianceStatus(self.status_string)
