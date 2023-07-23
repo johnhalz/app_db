@@ -5,14 +5,17 @@ from sqlalchemy import Column, String, Boolean, Integer, UUID
 
 from .bases import ProductionBase
 
+
 class AppLightingPreference(Enum):
     SYSTEM = 'System'
     LIGHT = 'Light'
     DARK = 'Dark'
 
+
 class LanguagePreference(Enum):
     ENGLISH = 'English'
     DEUTSCH = 'Deutsch'
+
 
 class UserPreference(ProductionBase):
     __tablename__ = 'user_preference_table'

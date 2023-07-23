@@ -5,6 +5,7 @@ from sqlalchemy import Column, String, UUID, DateTime, Integer
 
 from .bases import ProductionBase
 
+
 class Result(ProductionBase):
     __tablename__ = 'result_table'
 

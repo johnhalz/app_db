@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+
 class ProductionStepModel(ProductionBase):
     __tablename__ = 'production_step_model_table'
 
@@ -16,8 +17,19 @@ class ProductionStepModel(ProductionBase):
     equipment_id = Column(UUID(as_uuid=True), ForeignKey('equipment_table.id'))
     equipment = relationship('Equipment', foreign_keys=[equipment_id])
 
-    hardware_model_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'))
-    hardware_model = relationship('HardwareModel', foreign_keys=[hardware_model_id])
+    hardware_model_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('hardware_model_table.id')
+    )
+    hardware_model = relationship(
+        'HardwareModel',
+        foreign_keys=[hardware_model_id]
+    )
 
-    parent_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model_table.id'), nullable=True, default=None)
+    parent_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('production_step_model_table.id'),
+        nullable=True,
+        default=None
+    )
     parent = relationship('ProductionStepModel', foreign_keys=[parent_id])

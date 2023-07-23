@@ -8,6 +8,7 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+
 class SpecificationSeverity(Enum):
     CAN_BE_IGNORED = 'Can be Ignored'
     VERY_LOW = 'Very Low'
@@ -17,6 +18,7 @@ class SpecificationSeverity(Enum):
     VERY_HIGH = 'Very High'
     HIGHEST = 'Highest'
     CRITICAL = 'Critical'
+
 
 class Specification(ProductionBase):
     __tablename__ = 'specification_table'
@@ -30,11 +32,25 @@ class Specification(ProductionBase):
     description = Column(String(500), nullable=True, default=None)
     severity_string = Column(String(50), nullable=False, default='Normal')
 
-    hardware_model_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'), nullable=False)
-    hardware_model = relationship('HardwareModel', foreign_keys=[hardware_model_id])
+    hardware_model_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('hardware_model_table.id'),
+        nullable=False
+    )
+    hardware_model = relationship(
+        'HardwareModel',
+        foreign_keys=[hardware_model_id]
+    )
 
-    production_step_model_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model.id'), nullable=False)
-    production_step_model = relationship('ProductionStepModel', foreign_keys=[production_step_model_id])
+    production_step_model_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('production_step_model.id'),
+        nullable=False
+    )
+    production_step_model = relationship(
+        'ProductionStepModel',
+        foreign_keys=[production_step_model_id]
+    )
 
     @property
     def minimum(self) -> Quantity:
@@ -48,7 +64,8 @@ class Specification(ProductionBase):
     def severity(self) -> SpecificationSeverity:
         return SpecificationSeverity(self.severity_string)
 
-    def is_validated_by(self, input: Quantity, including_boundaries: bool = True) -> bool:
+    def is_validated_by(self, input: Quantity,
+                        including_boundaries: bool = True) -> bool:
         if including_boundaries:
             return self.minimum <= input <= self.maximum
         else:

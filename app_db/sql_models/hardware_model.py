@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+
 class HardwareModel(ProductionBase):
     __tablename__ = 'hardware_model_table'
 
@@ -14,5 +15,10 @@ class HardwareModel(ProductionBase):
     version = Column(Integer, nullable=False)
     mirror = Column(Integer, nullable=False)
 
-    parent_id = Column(UUID(as_uuid=True), ForeignKey('hardware_model_table.id'), nullable=True, default=None)
+    parent_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('hardware_model_table.id'),
+        nullable=True,
+        default=None
+    )
     parent = relationship('HardwareModel', foreign_keys=[parent_id])

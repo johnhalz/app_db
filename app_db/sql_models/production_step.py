@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+
 class ProductionStepStatus(Enum):
     NOT_STARTED = 'Not Started'
     IN_PROGRESS = 'In Progress'
@@ -14,6 +15,7 @@ class ProductionStepStatus(Enum):
     PAUSED = 'Paused'
     STOPPED = 'Stopped'
     ABANDONED = 'Abandoned'
+
 
 class ProductionStep(ProductionBase):
     __tablename__ = 'production_step_table'
@@ -26,8 +28,14 @@ class ProductionStep(ProductionBase):
     order_id = Column(UUID(as_uuid=True), ForeignKey('order_table.id'))
     order = relationship('Order', foreign_keys=[order_id])
 
-    production_step_model_id = Column(UUID(as_uuid=True), ForeignKey('production_step_model_table.id'))
-    production_step_model = relationship('ProductionStepModel', foreign_keys=[production_step_model_id])
+    production_step_model_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('production_step_model_table.id')
+    )
+    production_step_model = relationship(
+        'ProductionStepModel',
+        foreign_keys=[production_step_model_id]
+    )
 
     operator_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
     operator = relationship('User', foreign_keys=[operator_id])

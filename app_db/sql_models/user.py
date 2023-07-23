@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+
 class UserRole(Enum):
     ADMIN = 'Admin'
     SYSTEM_ENGINEER = 'System Engineer'
@@ -13,6 +14,7 @@ class UserRole(Enum):
     DATA_SCIENTIST = 'Data Scientist'
     TEST_OPERATOR = 'Test Operator'
     MECHANIC = 'Mechanic'
+
 
 class User(ProductionBase):
     __tablename__ = 'user_table'
@@ -24,9 +26,15 @@ class User(ProductionBase):
     username = Column(String(150), nullable=False, default='')
     encrypted_pw = Column(String(256), nullable=False)
     role_string = Column(String(50), nullable=False)
-    user_preference_id = Column(UUID(as_uuid=True), ForeignKey('user_preference_table.id'))
+    user_preference_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('user_preference_table.id')
+    )
 
-    user_preference = relationship('UserPreference', foreign_keys=[user_preference_id])
+    user_preference = relationship(
+        'UserPreference',
+        foreign_keys=[user_preference_id]
+    )
 
     def __init__(self, *args, **kwargs):
         super(User, self).__init__(*args, **kwargs)

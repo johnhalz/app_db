@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+
 class Comment(ProductionBase):
     __tablename__ = 'comment_table'
 
@@ -17,5 +18,11 @@ class Comment(ProductionBase):
     author_id = Column(UUID(as_uuid=True), ForeignKey('user_table.id'))
     author = relationship('User', foreign_keys=[author_id])
 
-    non_compliance_id = Column(UUID(as_uuid=True), ForeignKey('non_compliance_table.id'))
-    non_compliance = relationship('NonCompliance', foreign_keys=[non_compliance_id])
+    non_compliance_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey('non_compliance_table.id')
+    )
+    non_compliance = relationship(
+        'NonCompliance',
+        foreign_keys=[non_compliance_id]
+    )

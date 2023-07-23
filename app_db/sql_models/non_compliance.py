@@ -6,12 +6,14 @@ from sqlalchemy.orm import relationship
 
 from .bases import ProductionBase
 
+
 class NonComplianceStatus(Enum):
     NOT_REVIEWED = 'Not Reviewed'
     IN_REVIEW = 'In Review'
     FIX_IN_PROGRESS = 'Fix in Progress'
     RESOLVED = 'Resolved'
     ABANDONED = 'Abandoned'
+
 
 class NonCompliance(ProductionBase):
     __tablename__ = 'non_compliance_table'
